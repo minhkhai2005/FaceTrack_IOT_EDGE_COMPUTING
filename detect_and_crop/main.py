@@ -6,12 +6,21 @@ import time
 import requests
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-from tcp_client import send_image_to_server  # Import hàm gửi ảnh qua TCP
 
 # --- CONFIG ---
 SERVER_URL = "http://localhost:8001/api/attendance/process"
 MODEL_FILE = 'face_detector.tflite'
-SAVE_DIR = "dataset/23520688" # Thu muc luu anh theo MSSV cua Khang
+MODEL_URL = "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite"
+
+# Điều kiện cấu hình
+MIN_FACE_AREA_RATIO = 0.1  # Tỷ lệ khuôn mặt 
+HOLD_TIME_SECONDS = 1.0    # Giữ mặt trong 1 giây
+
+# --- TU DONG TAI MODEL ---
+if not os.path.exists(MODEL_FILE):
+    print("--- Dang tai model... Vui long doi ---")
+    urllib.request.urlretrieve(MODEL_URL, MODEL_FILE)
+    print("--- Tai xong! ---")
 
 # --- KHOI TAO DETECTOR ---
 base_options = python.BaseOptions(model_asset_path=MODEL_FILE)
